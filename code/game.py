@@ -45,8 +45,10 @@ eh3 = pygame.image.load(imagePath3).convert_alpha()
 
 cryehPath = "images\\cryeh.webp"
 okehPath = "images\\okeh.webp"
+cheerehPath = "images\\cheereh.webp"
 cryehImage = pygame.image.load(cryehPath).convert_alpha()
 okehImage = pygame.image.load(okehPath).convert_alpha()
+cheerehImage = pygame.image.load(cheerehPath).convert_alpha()
 
 resetImagepath = "images\\Reset.png"
 playAgainImagepath = "images\\PlayAgain.png"
@@ -73,6 +75,7 @@ class Game:
         self.score = 0
         self.gameOver = False
         self.startTime = pygame.time.get_ticks()
+        self.finalTime = 0
 
     def GridToScreen(self, row, col):
         x0, y0 = GRID_ORIGIN
@@ -168,12 +171,20 @@ class Game:
                 surface.blit(cryehImage, (
                     WIDTH // 2 - cryehImage.get_width() // 2, 300
                     ))
+            elif self.score == 170:
+                surface.blit(cheerehImage, ((
+                    WIDTH // 2 - cheerehImage.get_width() // 2, 300
+                    )))
             else:
                 surface.blit(okehImage, (
                     WIDTH // 2 - okehImage.get_width() // 2, 300
                 ))
 
-            gameoverText = font.render(" Game Over", True, GAMEOVER_COLOR)
+            if self.score < 170:
+                gameoverText = font.render(" Game Over", True, GAMEOVER_COLOR)
+            else:
+                gameoverText = font.render(f" Time: {int(self.finalTime)}", True, GAMEOVER_COLOR)
+            
             gameoverscoreText = font.render(f"Score: {self.score}", True, GAMEOVER_COLOR)
             surface.blit(gameoverText, (
                 WIDTH // 2 - gameoverText.get_width() // 2, 
@@ -203,12 +214,16 @@ class Game:
         elapsedTime = currentTime - self.startTime
         remainingTime = TIMELIMIT - (elapsedTime / 1000) #converts from ms to s
 
-        if remainingTime <= 0:
+        if remainingTime <= 0 or self.score == 170:
             if not self.gameOver:
                 gameoverSound.play()
             
             self.gameOver = True
             remainingTime = 0
+        
+        if self.score == 170:
+            self.gameOver = True
+            self.finalTime = TIMELIMIT - remainingTime
         
         timerText = font.render(f"Time Left: {int(remainingTime)}", True, TEXT_COLOR1)
         surface.blit(timerText, (WIDTH / 2 - timerText.get_width() // 2, 10))
