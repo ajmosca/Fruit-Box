@@ -17,14 +17,17 @@ class Button():
         action = False
 
         pos = pygame.mouse.get_pos()
+        surface.blit(self.image, (self.rect.x, self.rect.y))
 
         if self.rect.collidepoint(pos):
             if pygame.mouse.get_pressed()[0] == 1 and not self.clicked:
                 self.clicked = True
-                action = True
-            if pygame.mouse.get_pressed()[0] == 0:
-                self.clicked = False
-
-        surface.blit(self.image, (self.rect.x, self.rect.y))
+    
+        elif pygame.mouse.get_pressed()[0] == 0:
+            self.clicked = False
+        
+        if self.clicked and pygame.mouse.get_pressed()[0] == 0 and self.rect.collidepoint(pos):
+            action = True
+            self.clicked = False
 
         return action
