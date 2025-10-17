@@ -1,14 +1,19 @@
+# for web 
+# @pygbag.asset("images")
+# @pygbag.asset("soundEffects")
+
 import random
+import os
 import pygame
 import button as button
 
 #variables
-WIDTH, HEIGHT = 1450, 1000
+WIDTH, HEIGHT = 1120, 720
 GRID_COLS, GRID_ROWS = 17, 10
-CELL_SIZE = 80
+CELL_SIZE = 60
 GRID_ORIGIN = (50, 50)
-RESETBUTTONCOORDS = (1000, 900)
-PLAYAGAINBUTTONCOORDS = (570, 700)
+RESETBUTTONCOORDS = (940, 667)
+PLAYAGAINBUTTONCOORDS = (436, 400)
 
 FPS = 60
 
@@ -22,7 +27,9 @@ TEXT_COLOR2 = (255, 0, 0)
 GAMEOVER_COLOR = (0, 0, 0)
 GAMEOVERBOX_COLOR = (255, 255, 255)
 
-TIMELIMIT = 90
+TIMELIMIT = 91
+
+BASE_DIR = os.path.dirname(__file__)
 
 #pygame start functions
 pygame.init()
@@ -36,33 +43,31 @@ font = pygame.font.SysFont("comicsansms", 28)
 timerfont = pygame.font.SysFont("comicsansms", 40)
 
 #Load images and SFX
-imagePath1 = "images\\eh1.png"
-imagePath2 = "images\\eh2.png"
-imagePath3 = "images\\eh3.png"
-eh1 = pygame.image.load(imagePath1).convert_alpha()
-eh2 = pygame.image.load(imagePath2).convert_alpha()
-eh3 = pygame.image.load(imagePath3).convert_alpha()
 
-cryehPath = "images\\cryeh.webp"
-okehPath = "images\\okeh.webp"
-cheerehPath = "images\\cheereh.webp"
-cryehImage = pygame.image.load(cryehPath).convert_alpha()
-okehImage = pygame.image.load(okehPath).convert_alpha()
-cheerehImage = pygame.image.load(cheerehPath).convert_alpha()
+def imgAssetPath(filename):
+    return os.path.join(BASE_DIR, "images", filename)
 
-resetImagepath = "images\\Reset.png"
-playAgainImagepath = "images\\PlayAgain.png"
-quitImagepath = "images\\Quit.png"
-resetImage = pygame.image.load(resetImagepath).convert_alpha()
-playAgainImage = pygame.image.load(playAgainImagepath).convert_alpha()
-quitImage = pygame.image.load(quitImagepath).convert_alpha()
+def soundAssetPath(filename):
+    return os.path.join(BASE_DIR, "soundeffects", filename)
 
-gameoverSound = pygame.mixer.Sound('soundEffects\\deltarune-explosion.mp3')
-popSound = pygame.mixer.Sound('soundEffects\\pop-402323.mp3')
+eh1 = pygame.image.load(imgAssetPath("eh1.png")).convert_alpha()
+eh2 = pygame.image.load(imgAssetPath("eh2.png")).convert_alpha()
+eh3 = pygame.image.load(imgAssetPath("eh3.png")).convert_alpha()
 
-resetButton = button.Button(RESETBUTTONCOORDS[0], RESETBUTTONCOORDS[1], resetImage, 1)
-playAgainButton = button.Button(PLAYAGAINBUTTONCOORDS[0], PLAYAGAINBUTTONCOORDS[1], playAgainImage, 1)
-quitButton = button.Button(PLAYAGAINBUTTONCOORDS[0], PLAYAGAINBUTTONCOORDS[1] + 100, quitImage, 1)
+cryehImage = pygame.image.load(imgAssetPath("cryeh.webp")).convert_alpha()
+okehImage = pygame.image.load(imgAssetPath("okeh.webp")).convert_alpha()
+cheerehImage = pygame.image.load(imgAssetPath("cheereh.webp")).convert_alpha()
+
+resetImage = pygame.image.load(imgAssetPath("Reset.png")).convert_alpha()
+playAgainImage = pygame.image.load(imgAssetPath("PlayAgain.png")).convert_alpha()
+quitImage = pygame.image.load(imgAssetPath("Quit.png")).convert_alpha()
+
+gameoverSound = pygame.mixer.Sound(soundAssetPath('deltarune-explosion.ogg'))
+popSound = pygame.mixer.Sound(soundAssetPath('pop-402323.ogg'))
+
+resetButton = button.Button(RESETBUTTONCOORDS[0], RESETBUTTONCOORDS[1], resetImage, .77)
+playAgainButton = button.Button(PLAYAGAINBUTTONCOORDS[0], PLAYAGAINBUTTONCOORDS[1], playAgainImage, .77)
+quitButton = button.Button(PLAYAGAINBUTTONCOORDS[0], PLAYAGAINBUTTONCOORDS[1] + 100, quitImage, .77)
 
 class Game:
     def __init__(self):
@@ -163,36 +168,36 @@ class Game:
             overlay.fill(GAMEOVER_BG)
             surface.blit(overlay, (0,0))
 
-            gameoverRect = pygame.Rect(610, 450, 3 * CELL_SIZE, 2 * CELL_SIZE)
+            gameoverRect = pygame.Rect(470, 205, 3 * CELL_SIZE, 2.5 * CELL_SIZE)
             pygame.draw.rect(surface, GAMEOVERBOX_COLOR, gameoverRect)
             pygame.draw.rect(surface, GAMEOVER_COLOR, gameoverRect, 5)
 
             if self.score <= 99:
                 surface.blit(cryehImage, (
-                    WIDTH // 2 - cryehImage.get_width() // 2, 300
+                    WIDTH // 2 - cryehImage.get_width() // 2, 100
                     ))
             elif self.score == 170:
                 surface.blit(cheerehImage, ((
-                    WIDTH // 2 - cheerehImage.get_width() // 2, 300
+                    WIDTH // 2 - cheerehImage.get_width() // 2, 100
                     )))
             else:
                 surface.blit(okehImage, (
-                    WIDTH // 2 - okehImage.get_width() // 2, 300
+                    WIDTH // 2 - okehImage.get_width() // 2, 100
                 ))
 
             if self.score < 170:
-                gameoverText = font.render(" Game Over", True, GAMEOVER_COLOR)
+                gameoverText = font.render("Game Over", True, GAMEOVER_COLOR)
             else:
-                gameoverText = font.render(f" Time: {int(self.finalTime)}", True, GAMEOVER_COLOR)
+                gameoverText = font.render(f"Time: {int(self.finalTime)}", True, GAMEOVER_COLOR)
             
             gameoverscoreText = font.render(f"Score: {self.score}", True, GAMEOVER_COLOR)
             surface.blit(gameoverText, (
                 WIDTH // 2 - gameoverText.get_width() // 2, 
-                HEIGHT // 2 - gameoverText.get_height() // 2
+                HEIGHT // 2 - gameoverText.get_height() // 2 - 110
                 ))
             surface.blit(gameoverscoreText, (
                 WIDTH // 2 - gameoverscoreText.get_width() // 2,
-                HEIGHT // 2 + gameoverscoreText.get_height()
+                HEIGHT // 2 + gameoverscoreText.get_height() - 110
             ))
         
         if self.currRectangle and not self.gameOver:
@@ -203,8 +208,8 @@ class Game:
             # render and draw score text
             scoretext = font.render("Score: ", True, TEXT_COLOR1)
             scoretext2 = font.render(f"{self.score}", True, TEXT_COLOR2)
-            surface.blit(scoretext, (100,900))
-            surface.blit(scoretext2, (185,900))
+            surface.blit(scoretext, (100,660))
+            surface.blit(scoretext2, (185,660))
 
     def timer(self, surface):
         if self.gameOver:

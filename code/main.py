@@ -1,15 +1,16 @@
 import pygame
+import asyncio
 import sys
-import button as button
 from game import *
 
-def playgame():
+async def playgame():
     game = Game()
-    while True:
+    running = True
+
+    while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT or quitButton.drawButton(screen):
-                pygame.quit()
-                sys.exit()
+                running = False
             game.Events(event)
 
             if (resetButton.drawButton(screen) or playAgainButton.drawButton(screen)):
@@ -32,4 +33,10 @@ def playgame():
         pygame.display.flip()
         clock.tick(FPS)
 
-playgame()
+        await asyncio.sleep(0)
+
+    pygame.quit()
+    sys.exit()
+
+if __name__ == "__main__":
+    asyncio.run(playgame())
